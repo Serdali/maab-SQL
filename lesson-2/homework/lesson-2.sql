@@ -69,3 +69,34 @@ INSERT INTO nobel_win VALUES
 (1987, 'Literature', 'Joseph Brodsky', 'Russia', 'Linguist'),
 (1987, 'Economics', 'Robert Solow', 'USA', 'Economist'),
 (1994, 'Literature', 'Kenzaburo Oe', 'Japan', 'Linguist')
+
+---5 task
+CREATE TABLE item_mast (pro_id INT, pro_name VARCHAR(50), pro_price DECIMAL (10,2), PRO_COM INT)
+INSERT INTO item_mast VALUES
+(101, 'Mother Board', 3200.00, 15),
+(102, 'Key Board', 450.00, 16),
+(103, 'ZIP drive', 250.00, 14),
+(104, 'Speaker', 550.00, 16),
+(105, 'Monitor', 5000.00, 11),
+(106, 'DVD drive', 900.00, 12),
+(107, 'CD drive', 800.00, 12),
+(108, 'Printer', 2600.00, 13),
+(109, 'Refill cartridge', 350.00, 13),
+(110, 'Mouse', 250.00, 12)
+
+---6 task
+CREATE TABLE emp_details (EMP_IDNO INT, EMP_FNAME VARCHAR(50), EMP_LNAME VARCHAR(50), EMP_DEPT INT)
+INSERT INTO emp_details VALUES
+(127323,'Michale','Robbin',57),
+(526689,'Carlos','Snares',63),
+(843795,'Enric','Dosio',57),
+(328717,'John','Snares',63),
+(444527,'Joseph','Dosni',47),
+(659831,'Zanifer','Emily',47),
+(847674,'Kuleswar','Sitaraman',57),
+(748681,'Henrey','Gabriel',47),
+(555935,'Alex','Manuel',57),
+(539569,'George','Mardy',27),
+(733843,'Mario','Saule',63),
+(631548,'Alan','Snappy',27),
+(839139,'Maria','Foster',57)
