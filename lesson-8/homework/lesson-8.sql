@@ -1,11 +1,3 @@
-SELECT * FROM Customers
-SELECT * FROM EmployeeDepartments
-SELECT * FROM Employees
-SELECT * FROM OrderDetails
-SELECT * FROM Orders
-SELECT * FROM Products
-SELECT * FROM ProductCategories
-
 --1 TASK (EASY)
 SELECT 
 	c.CustomerName,
