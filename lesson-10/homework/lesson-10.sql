@@ -212,14 +212,9 @@ SELECT
 	e.Name,
 	d.DepartmentName
 FROM Employees e
-JOIN Departments d
+LEFT JOIN Departments d
 ON e.DepartmentID = d.DepartmentID
-AND (d.DepartmentName IN ('Human Resources','Finance') OR
-			 LEN(e.Name) - LEN(REPLACE(e.Name, 'A', '')) 
-           + LEN(e.Name) - LEN(REPLACE(e.Name, 'E', '')) 
-           + LEN(e.Name) - LEN(REPLACE(e.Name, 'I', '')) 
-           + LEN(e.Name) - LEN(REPLACE(e.Name, 'O', '')) 
-           + LEN(e.Name) - LEN(REPLACE(e.Name, 'U', '')) >= 4)
+AND (d.DepartmentName IN ('Human Resources','Finance') OR Name LIKE '%[aeiou]%[aeiou]%[aeiou]%[aeiou]%')
 
 --20 TASK (HARD) Write a query to join Sales and Products using AND in the ON clause to filter products that have both a sales quantity greater than 100 and a price above 500.
 SELECT 
