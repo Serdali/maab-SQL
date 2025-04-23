@@ -1,62 +1,45 @@
---Puzzle 1: Finding Distinct Values
---Question: Explain at least two ways to find distinct values based on two columns.
-
-CREATE TABLE InputTbl (col1 VARCHAR(1), col2 VARCHAR(1))
-INSERT INTO InputTbl VALUES 
-('a', 'b'),
-('a', 'b'),
-('b', 'a'),
-('c',  'd'),
-('c', 'd'),
-('m', 'n'),
-('n', 'm')
-
-SELECT col1, col2
+--6.1 Finding Distinct Values
+---1-WAY
+SELECT col1, col2 
 FROM InputTbl
 WHERE col1 < col2
 UNION
-SELECT col2, col1
+SELECT col1, col2 
 FROM InputTbl
-WHERE col2 < col1
+WHERE col2 > col1
 
---Puzzle 2: Counting 'a' for Different Types
---Question: Count occurrences of 'a' in columns Value1, Value2, and Value3 for different Typs.
+---2-WAY
+SELECT DISTINCT	
+	LEAST(col1, col2) AS col1,
+	GREATEST(col1, col2) AS col2
+FROM InputTbl
 
-CREATE TABLE GroupbyMultipleColumns ( ID INT, Typ VARCHAR(1), Value1 VARCHAR(1), Value2 VARCHAR(1), Value3 VARCHAR(1) );
-INSERT INTO GroupbyMultipleColumns(ID, Typ, Value1, Value2, Value3) VALUES 
-(1, 'I', 'a', 'b', ''), 
-(2, 'O', 'a', 'd', 'f'), 
-(3, 'I', 'd', 'b', ''), 
-(4, 'O', 'g', 'l', ''), 
-(5, 'I', 'z', 'g', 'a'), 
-(6, 'I', 'z', 'g', 'a');
+--6.2 If all the columns have zero values, then don’t show that row. In this case, we have to remove the 5th row while selecting data.
+SELECT * FROM TestMultipleZero
+WHERE NOT (A=0 AND B=0 AND C=0 AND D=0)
 
---1st version
-SELECT Typ, COUNT(*) AS Counts
-FROM GroupbyMultipleColumns
-WHERE Value1 = 'a' OR Value2 = 'a' OR Value3 = 'a'
-GROUP BY Typ
---2nd version
-SELECT Typ,
-	SUM(CASE WHEN Value1 = 'a' OR Value2 = 'a' OR Value3 = 'a' THEN 1 ELSE 0 END) AS Counts
-FROM GroupbyMultipleColumns
-GROUP BY Typ
+--6.3 Find those with odd ids
+SELECT * 
+FROM section1
+WHERE id % 2 = 1
 
---Puzzle 3: Finding Duplicate Values
---Question: Find values that appear more than once in the table.
+--6.4 Person with the smallest id (use the table in puzzle 3)
+SELECT *
+FROM section1
+WHERE id = (SELECT MIN(id) FROM section1)
 
-CREATE TABLE TESTDuplicateCount ( ID INT, EmpName VARCHAR(100), EmpDate DATETIME );
-INSERT INTO TESTDuplicateCount(ID,EmpName,EmpDate) VALUES 
-(1,'Pawan','2014-01-05'), 
-(2,'Pawan','2014-03-05'), 
-(3,'Pawan','2014-02-05'), 
-(4,'Manisha','2014-07-05'), 
-(5,'Sharlee','2014-09-05'), 
-(6,'Barry','2014-02-05'), 
-(7,'Jyoti','2014-04-05'), 
-(8,'Jyoti','2014-05-05');
+--6.5 Person with the highest id (use the table in puzzle 3)
+SELECT *
+FROM section1
+WHERE id = (SELECT MAX(id) FROM section1)
 
-SELECT EmpName, COUNT(*) AS Duplicates
-FROM TESTDuplicateCount
-GROUP BY EmpName
-HAVING COUNT(*)>1
+--6.6 People whose name starts with b (use the table in puzzle 3)
+SELECT *
+FROM section1
+WHERE name LIKE 'B%'
+
+--6.7 Write a query to return only the rows where the code contains the literal underscore _ (not as a wildcard).
+SELECT 
+	Code 
+FROM ProductCodes
+WHERE Code LIKE '%\_%' ESCAPE '\'

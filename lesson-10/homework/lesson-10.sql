@@ -1,239 +1,260 @@
---1 TASK (EASY) Write a query to perform an INNER JOIN between Orders and Customers using AND in the ON clause to filter orders placed after 2022.
+﻿--10.1 Using the Employees and Departments tables, write a query to return the names and salaries of employees whose salary is greater than 50000, along with their department names.
 SELECT 
-	o.OrderID,
-	o.OrderDate,
-	c.CustomerID
-FROM [hwlesson_9].[dbo].Orders o
-INNER JOIN [hwlesson_9].[dbo].Customers c
-ON o.CustomerID = c.CustomerID
-AND YEAR(o.OrderDate) > 2022
-
---2 TASK (EASY) Write a query to join Employees and Departments using OR in the ON clause to show employees in either the 'Sales' or 'Marketing' department.
-SELECT 
-	e.EmployeeID,
-	e.Name,
+	e.Name AS EmployeeName,
+	e.Salary,
 	d.DepartmentName
 FROM Employees e
 JOIN Departments d
 ON e.DepartmentID = d.DepartmentID
-AND(d.DepartmentName = 'Sales' OR d.DepartmentName = 'Marketing')
+WHERE e.Salary > 50000
 
---3 TASK (EASY) Write a query to demonstrate a CROSS APPLY between Departments and a derived table that shows their Employees, top-performing employee (e.g., top 1 Employee who gets the most salary).
-SELECT * FROM Departments d
-CROSS APPLY
-(SELECT TOP 1
-	EmployeeID,
-	Name,
-	Salary
-FROM Employees
-WHERE DepartmentID = d.DepartmentID
-ORDER BY Salary DESC) e
-
---4 TASK (EASY) Write a query to join Customers and Orders using AND in the ON clause to filter customers who have placed orders in 2023 and who lives in the USA.
+--10.2 Using the Customers and Orders tables, write a query to display customer names and order dates for orders placed in the year 2023.
 SELECT 
-	c.CustomerID,
 	c.FirstName,
 	c.LastName,
-	c.Country,
 	o.OrderDate
 FROM Customers c
-LEFT JOIN Orders o ON c.CustomerID = o.CustomerID
-AND (YEAR(o.OrderDate) = 2023 AND c.Country = 'USA')
+JOIN Orders o
+ON c.CustomerID = o.CustomerID
+WHERE YEAR(o.OrderDate) = 2023
 
---5 TASK (EASY) Write a query to join a derived table (SELECT CustomerID, COUNT(*) FROM Orders GROUP BY CustomerID) with the Customers table to show the number of orders per customer.
-SELECT 
-	c.CustomerID,
-	c.FirstName,
-	o.OrderCount
-FROM Customers c
-CROSS APPLY
-   (SELECT CustomerID, COUNT(*) AS OrderCount
-    FROM Orders
-	WHERE CustomerID = c.CustomerID
-    GROUP BY CustomerID) o
-
---6 TASK (EASY) Write a query to join Products and Suppliers using OR in the ON clause to show products supplied by either 'Gadget Supplies' or 'Clothing Mart'.
-SELECT 
-	p.ProductID,
-	p.ProductName,
-	s.SupplierName
-FROM Products p
-JOIN Suppliers s ON p.SupplierID = s.SupplierID
-AND (s.SupplierName = 'Gadget Supplies' OR s.SupplierName = 'Clothing Mart')
-
---7 TASK (EASY) Write a query to demonstrate the use of OUTER APPLY between Customers and a derived table that returns each Customers''s most recent order.
-SELECT 
-	c.CustomerID, c.FirstName, c.LastName, o.OrderDate
-FROM Customers c
-OUTER APPLY
-(SELECT TOP 1
-	CustomerID,
-	OrderDate
- FROM Orders
- WHERE CustomerID = c.CustomerID
- ORDER BY OrderDate DESC
-) o
-
---8 TASK (MEDIUM) Write a query that uses the AND logical operator in the ON clause to join Orders and Customers, and filter customers who placed an order with a total amount greater than 500.
-SELECT 
-	o.OrderID,
-	o.CustomerID,
-	c.FirstName,
-	c.LastName,
-	o.TotalAmount
-FROM Orders o
-JOIN Customers c
-ON o.CustomerID = c.CustomerID
-AND o.TotalAmount > 500
---9 TASK (MEDIUM) Write a query that uses the OR logical operator in the ON clause to join Products and Sales to filter products that were either sold in 2022 or the SaleAmount is more than 400.
-SELECT 
-	p.ProductID,
-	p.ProductName,
-	s.SaleDate,
-	s.SaleAmount
-FROM Products p
-JOIN Sales s
-ON p.ProductID = s.ProductID
-AND (YEAR(s.SaleDate) = 2022 OR s.SaleAmount>400)
-
---10 TASK (MEDIUM) Write a query to join a derived table that calculates the total sales (SELECT ProductID, SUM(Amount) FROM Sales GROUP BY ProductID) with the Products table to show total sales for each product.
-SELECT 
-	p.ProductID,
-	p.ProductName,
-	s.TotalSales
-FROM Products p
-CROSS APPLY
-	(SELECT ProductID, 
-	SUM(SaleAmount) AS TotalSales
-	FROM Sales
-	WHERE ProductID = p.ProductID
-	GROUP BY ProductID) s
-
---11 TASK (MEDIUM) Write a query to join Employees and Departments using AND in the ON clause to filter employees who belong to the 'HR' department and whose salary is greater than 50000.
-SELECT  
-	e.EmployeeID,
-	e.Name,
-	d.DepartmentName,
-	e.Salary
+--10.3 Using the Employees and Departments tables, write a query to show all employees along with their department names. Include employees who do not belong to any department.
+SELECT
+	e.Name AS EmployeeName,
+	d.DepartmentName
 FROM Employees e
-JOIN Departments d
+LEFT OUTER JOIN Departments d
 ON e.DepartmentID = d.DepartmentID
-AND (d.DepartmentName = 'Human Resources' AND e.Salary > 50000)
 
---12 TASK (MEDIUM) Write a query to use OUTER APPLY to return all customers along with their most recent orders, including customers who have not placed any orders.
+--10.4 Using the Products and Suppliers tables, write a query to list all suppliers and the products they supply. Show suppliers even if they don’t supply any product.
 SELECT 
-	c.CustomerID,
-	c.FirstName,
-	c.LastName,
-	o.OrderID,
-	o.OrderDate
-FROM Customers c
-OUTER APPLY
-	(SELECT TOP 1
-		OrderDate,
-		OrderID
-	FROM Orders
-	WHERE CustomerID = c.CustomerID
-	ORDER BY OrderDate DESC
-	) o
-
---13 TASK (MEDIUM) Write a query to join Products and Sales using AND in the ON clause to filter products that were sold in 2023 and StockQuantity is more than 50.
-SELECT 
-	p.ProductID,
-	p.ProductName,
-	s.SaleDate,
-	p.StockQuantity
+	s.SupplierName,
+	p.ProductName
 FROM Products p
-JOIN Sales s 
-ON p.ProductID = s.ProductID
-AND (YEAR(s.SaleDate)=2023 AND p.StockQuantity > 50)
+RIGHT JOIN Suppliers s
+ON p.SupplierID = s.SupplierID
 
---14 TASK (MEDIUM) Write a query to join Employees and Departments using OR in the ON clause to show employees who either belong to the 'Sales' department or hired after 2020.
-SELECT  
-	e.EmployeeID,
-	e.Name,
-	d.DepartmentName,
-	e.HireDate
+--10.5 Using the Orders and Payments tables, write a query to return all orders and their corresponding payments. Include orders without payments and payments not linked to any order.
+SELECT 
+	o.OrderID,
+	o.OrderDate,
+	p.PaymentDate,
+	p.Amount
+FROM Orders o
+FULL JOIN Payments p 
+ON o.OrderID = p.OrderID
+
+--10.6 Using the Employees table, write a query to show each employee's name along with the name of their manager.
+SELECT 
+	e.Name AS EmployeeName,
+	m.Name AS ManagerName
 FROM Employees e
-JOIN Departments d
-ON e.DepartmentID = d.DepartmentID
-AND (d.DepartmentName = 'Sales' OR YEAR(e.HireDate) > 2020)
+JOIN Employees m
+ON e.ManagerID = m.EmployeeID
 
---15 TASK (HARD) Write a query to demonstrate the use of the AND logical operator in the ON clause between Orders and Customers, and filter orders made by customers who are located in 'USA' and lives in an address that starts with 4 digits.
+--10.7 Using the Students, Courses, and Enrollments tables, write a query to list the names of students who are enrolled in the course named 'Math 101'.
 SELECT 
-	o.OrderID,
-	c.CustomerID,
-	c.Country,
-	c.Address
-FROM Orders o
-JOIN Customers c
-ON o.CustomerID = c.CustomerID
-AND (c.Country = 'USA' AND c.Address LIKE '[0-9][0-9][0-9][0-9]%')
+	s.Name AS StudentName,
+	c.CourseName
+FROM Students s
+JOIN Enrollments e
+ON s.StudentID = e.StudentID
+JOIN Courses c
+ON e.CourseID = c.CourseID
+WHERE c.CourseName = 'Math 101'
 
---16 TASK (HARD) Write a query to demonstrate the use of OR in the ON clause when joining Products and Sales to show products that are either part of the 'Electronics' category or Sale amount is greater than 350.
+--10.8 Using the Customers and Orders tables, write a query to find customers who have placed an order with more than 3 items. Return their name and the quantity they ordered.
 SELECT 
-	p.ProductID,
-	p.ProductName,
-	c.CategoryName,
-	s.SaleAmount
-FROM Products p
-JOIN Categories c ON p.Category = c.CategoryID
-JOIN Sales s ON p.ProductID = s.ProductID
-AND (c.CategoryName = 'Electronics' OR s.SaleAmount > 350)
-
---17 TASK (HARD) Write a query to join a derived table that returns a count of products per category (SELECT CategoryID, COUNT(*) FROM Products GROUP BY CategoryID) with the Categories table to show the count of products in each category.
-SELECT 
-	c.CategoryID,
-	c.CategoryName,
-	p.ProductCount
-FROM Categories c
-CROSS APPLY
-	(SELECT Category, COUNT(*) AS ProductCount
-	FROM Products
-	WHERE Category = c.CategoryID
-	GROUP BY Category) p
-
---18 TASK (HARD) Write a query to join Orders and Customers using AND in the ON clause to show orders where the customer is from 'Los Angeles' and the order amount is greater than 300.
-SELECT 
-	o.OrderID,
-	c.CustomerID,
 	c.FirstName,
 	c.LastName,
-	c.City,
-	o.TotalAmount
-FROM Orders o
-JOIN Customers c
-ON o.CustomerID = c.CustomerID
-AND (c.City = 'Los Angeles' AND o.TotalAmount > 300)
+	o.Quantity
+FROM Customers c
+JOIN Orders o
+ON c.CustomerID = o.CustomerID
+WHERE o.Quantity > 3
 
---19 TASK (HARD) Write a query to join Employees and Departments using a complex OR condition in the ON clause to show employees who are in the 'HR' or 'Finance' department, or have at least 4 vowels in their name.
-SELECT  
-	e.EmployeeID,
-	e.Name,
+--10.9 Using the Employees and Departments tables, write a query to list employees working in the 'Human Resources' department.
+SELECT 
+	e.Name AS EmployeeName, 
 	d.DepartmentName
 FROM Employees e
 LEFT JOIN Departments d
 ON e.DepartmentID = d.DepartmentID
-AND (d.DepartmentName IN ('Human Resources','Finance') OR Name LIKE '%[aeiou]%[aeiou]%[aeiou]%[aeiou]%')
+WHERE d.DepartmentName = 'Human Resources'
 
---20 TASK (HARD) Write a query to join Sales and Products using AND in the ON clause to filter products that have both a sales quantity greater than 100 and a price above 500.
-SELECT 
-	p.ProductID,
-	p.ProductName,
-	s.SaleAmount,
-	p.Price
-FROM Sales s
-JOIN Products p
-ON s.ProductID = p.ProductID
-AND (s.SaleAmount > 100 AND p.Price > 100)
-
---21 TASK (HARD) Write a query to join Employees and Departments using OR in the ON clause to show employees in either the 'Sales' or 'Marketing' department, and with a salary greater than 60000.
-SELECT  
-	e.EmployeeID,
-	e.Name,
+--10.10 Using the Employees and Departments tables, write a query to return department names that have more than 10 employees.
+SELECT
 	d.DepartmentName,
-	e.Salary
+	COUNT(e.EmployeeID) AS EmployeeCount
 FROM Employees e
 JOIN Departments d
 ON e.DepartmentID = d.DepartmentID
-AND(d.DepartmentName = 'Marketing' OR d.DepartmentName = 'Sales' AND e.Salary > 60000)
+GROUP BY d.DepartmentName
+HAVING COUNT(e.EmployeeID) >= 10
+
+--10.11 Using the Products and Sales tables, write a query to find products that have never been sold.
+SELECT 
+	p.ProductID,
+	p.ProductName
+FROM Products p
+LEFT OUTER JOIN Sales s
+ON p.ProductID = s.ProductID
+WHERE s.SaleAmount IS NULL
+
+--10.12 Using the Customers and Orders tables, write a query to return customer names who have placed at least one order.
+SELECT
+	c.FirstName,
+	c.LastName,
+	COUNT(o.OrderID) AS TotalOrders	
+FROM Customers c
+RIGHT OUTER JOIN Orders o
+ON c.CustomerID = o.CustomerID
+GROUP BY c.FirstName,c.LastName
+HAVING COUNT(o.OrderID) > 0
+
+--10.13 Using the Employees and Departments tables, write a query to show only those records where both employee and department exist (no NULLs).
+SELECT 
+	e.Name AS EmployeeName,
+	d.DepartmentName
+FROM Employees e
+INNER JOIN Departments d
+ON e.DepartmentID = d.DepartmentID
+
+--10.14 Using the Employees table, write a query to find pairs of employees who report to the same manager.
+SELECT
+	e1.Name AS Employee1,
+	e2.Name AS Employee2,
+	e2.ManagerID AS ManagerID
+FROM Employees e1
+JOIN Employees e2
+ON e1.ManagerID = e2.ManagerID
+WHERE 
+    e1.EmployeeID < e2.EmployeeID
+    AND e1.ManagerID IS NOT NULL
+
+--10.15 Using the Orders and Customers tables, write a query to list all orders placed in 2022 along with the customer name.
+SELECT 
+	o.OrderID,
+	o.OrderDate,
+	c.FirstName,
+	c.LastName
+FROM Orders o
+LEFT OUTER JOIN Customers c
+ON o.CustomerID = c.CustomerID
+WHERE YEAR(o.OrderDate) = 2022
+
+--10.16 Using the Employees and Departments tables, write a query to return employees from the 'Sales' department whose salary is above 60000.
+SELECT  
+	e.Name AS EmployeeName,
+	e.Salary,
+	d.DepartmentName
+FROM Employees e
+JOIN Departments d
+ON e.DepartmentID = d.DepartmentID AND d.DepartmentName = 'Sales' 
+WHERE e.Salary >= 60000
+
+--10.17 Using the Orders and Payments tables, write a query to return only those orders that have a corresponding payment.
+SELECT
+	o.OrderID,
+	o.OrderDate,
+	p.PaymentDate,
+	p.Amount
+FROM Orders o
+JOIN Payments p
+ON o.OrderID = p.OrderID
+
+--10.18 Using the Products and Orders tables, write a query to find products that were never ordered.
+SELECT 
+	p.ProductID,
+	p.ProductName
+FROM Products p
+LEFT OUTER JOIN Orders o
+ON p.ProductID = o.ProductID
+WHERE o.OrderID IS NULL
+
+--10.19 Using the Employees table, write a query to find employees whose salary is greater than the average salary of all employees.
+SELECT 
+	Name AS EmployeeName,
+	Salary
+FROM Employees
+WHERE Salary > (SELECT AVG(Salary) FROM Employees)
+
+--10.20 Using the Orders and Payments tables, write a query to list all orders placed before 2020 that have no corresponding payment.
+SELECT 
+	o.OrderID,
+	o.OrderDate
+FROM Orders o
+LEFT OUTER JOIN Payments p
+ON o.OrderID = p.OrderID
+WHERE YEAR(o.OrderDate) < 2023 AND p.PaymentID IS NULL
+
+--10.21 Using the Products and Categories tables, write a query to return products that do not have a matching category.
+SELECT
+	p.ProductID,
+	p.ProductName
+FROM Products p
+FULL OUTER JOIN Categories c
+ON p.Category = c.CategoryID
+WHERE c.CategoryID IS NULL
+
+--10.22 Using the Employees table, write a query to find employees who report to the same manager and earn more than 60000.
+SELECT
+	e1.Name AS Employee1,
+	e2.Name AS Employee2,
+	e1.ManagerID,
+	e1.Salary
+FROM Employees e1
+JOIN Employees e2
+ON e1.ManagerID = e2.ManagerID
+   AND e1.EmployeeID < e2.EmployeeID
+WHERE e1.Salary > 60000 AND e2.Salary > 60000
+
+--10.23 Using the Employees and Departments tables, write a query to return employees who work in departments whose name starts with the letter 'M'.
+SELECT  
+	e.Name AS EmployeeName,
+	d.DepartmentName
+FROM Employees e
+RIGHT OUTER JOIN Departments d
+ON e.DepartmentID = d.DepartmentID
+WHERE d.DepartmentName LIKE 'M%'
+
+--10.24 Using the Products and Sales tables, write a query to list sales where the amount is greater than 500, including product names.
+SELECT 
+	s.SaleID,
+	p.ProductName,
+	s.SaleAmount
+FROM Products p
+JOIN Sales s
+ON p.ProductID = s.ProductID
+WHERE s.SaleAmount > 500
+
+--10.25 Using the Students, Courses, and Enrollments tables, write a query to find students who have not enrolled in the course 'Math 101'.
+SELECT 
+	s.StudentID,
+	s.Name AS StudentName
+FROM Students s
+LEFT OUTER JOIN Enrollments e
+ON s.StudentID = e.StudentID
+LEFT OUTER JOIN Courses c
+ON e.CourseID = c.CourseID
+WHERE c.CourseName <> 'Math 101' OR c.CourseName IS NULL
+
+--10.26 Using the Orders and Payments tables, write a query to return orders that are missing payment details.
+SELECT
+	o.OrderID,
+	o.OrderDate,
+	p.PaymentID
+FROM Orders o
+FULL OUTER JOIN Payments p
+ON o.OrderID = p.OrderID
+WHERE p.PaymentID IS NULL
+
+--10.27 Using the Products and Categories tables, write a query to list products that belong to either the 'Electronics' or 'Furniture' category.
+SELECT 
+	p.ProductID,
+	p.ProductName,
+	c.CategoryName
+FROM Products p
+JOIN Categories c
+ON p.Category = c.CategoryID
+WHERE c.CategoryName IN ('Electronics','Furniture')

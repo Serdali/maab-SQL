@@ -1,225 +1,147 @@
---1 TASK (EASY)
+--8.1 Using Products table, find the total number of products available in each category.
 SELECT 
-	c.CustomerName,
-	o.OrderDate
-FROM [hwlesson_8].[dbo].[Customers] c
-JOIN [hwlesson_8].[dbo].[Orders] o ON c.CustomerID = o.CustomerID
+	Category,
+	COUNT(ProductID) AS total_products
+FROM Products
+GROUP BY Category
 
---2 TASK (EASY)
+--8.2 Using Products table, get the average price of products in the 'Electronics' category.
 SELECT 
-	e.EmployeeID,
-	e.Name,
-	ed.DepartmentName,
-	e.Salary,
-	e.HireDate
-FROM Employees e
-JOIN EmployeeDepartments ed ON e.EmployeeID = ed.EmployeeID
+	Category,
+	AVG(Price) AS avg_price
+FROM Products
+WHERE Category = 'Electronics'
+GROUP BY Category
 
---3 TASK (EASY)
+--8.3 Using Customers table, list all customers from cities that start with 'L'.
+SELECT * 
+FROM Customers
+WHERE City LIKE 'L%'
+
+--8.4 Using Products table, get all product names that end with 'er'.
 SELECT
-	p.ProductName,
-	pc.CategoryName
-FROM Products p
-JOIN ProductCategories pc ON p.ProductID = pc.ProductID
+	ProductName
+FROM Products
+WHERE ProductName LIKE '%er'
 
---4 TASK (EASY)
-SELECT 
-	c.CustomerID,
-	c.CustomerName,
-	c.Country,
-	o.OrderDate
-FROM Customers c
-LEFT JOIN Orders o ON c.CustomerID = o.CustomerID
-
---5 TASK (EASY)
+--8.5 Using Customers table, list all customers from countries ending in 'A'.
 SELECT
-	o.OrderID,
-	o.OrderDate,
-	p.ProductName
-FROM Orders o
-JOIN OrderDetails od ON o.OrderID = od.OrderID
-JOIN Products p ON p.ProductID = od.ProductID
+	FirstName,
+	Country
+FROM Customers
+WHERE Country LIKE '%A'
 
---6 TASK (EASY)
+--8.6 Using Products table, show the highest price among all products.
 SELECT 
-	p.ProductName,
-	pc.CategoryName
-FROM Products p
-CROSS JOIN ProductCategories pc
+	MAX(Price) AS highest_price
+FROM Products
 
---7 TASK (EASY)
-SELECT  
-	c.CustomerID,
-	c.CustomerName,
-	c.Country,
-	o.OrderID,
-	o.OrderDate
-FROM Customers c
-JOIN Orders o ON c.CustomerID = o.CustomerID
+--8.7 Using Products table, use IIF to label stock as 'Low Stock' if quantity < 30, else 'Sufficient'.
+SELECT 
+	ProductName,
+	StockQuantity,
+	IIF(StockQuantity < 30, 'Low Stock', 'Sufficient') AS stock_status
+FROM Products
 
---8 TASK (EASY)
+--8.8 Using Customers table, find the total number of customers in each country.
 SELECT
-	p.ProductID,
-	p.ProductName,
-	od.OrderDate,
-	od.TotalAmount
-FROM Products p
-CROSS JOIN OrderDetails od
-WHERE od.TotalAmount > 500
+	Country,
+	COUNT(CustomerID) AS cust_num
+FROM Customers
+GROUP BY Country
 
---9 TASK (EASY)
+--8.9 Using Orders table, find the minimum and maximum quantity ordered.
 SELECT
-	e.Name,
-	d.DepartmentName
-FROM Employees e
-JOIN Departments d ON e.DepartmentID = d.DepartmentID
+	MIN(Quantity) AS min_quantity,
+	MAX(Quantity) AS max_quantity
+FROM Orders
 
---10 TASK (EASY)
-/* QUESTION IS NOT CLEAR, IT DIDN`T MENTION TABLES NAME */
-SELECT t1*, t2*
-FROM Table1 t1
-JOIN Tabel2 t2 ON t1.column_name <> t2.column_name
+--8.10 Using Orders and Invoices tables, list customer IDs who placed orders in 2023 (using EXCEPT) to find those who did not have invoices.
+SELECT CustomerID, OrderDate FROM Orders
+WHERE YEAR(OrderDate) = 2023
+EXCEPT
+SELECT CustomerID, InvoiceDate FROM Invoices
 
---11 TASK (MEDIUM)
-SELECT  
-	c.CustomerName,
-	SUM(od.Quantity) AS order_amount
-FROM Customers c
-JOIN OrderDetails od ON c.CustomerID = od.CustomerID
-GROUP BY CustomerName
+--8.11 Using Products and Products_Discounted table, Combine all product names from Products and Products_Discounted including duplicates.
+SELECT ProductName FROM Products
+UNION ALL
+SELECT ProductName FROM Products_Discounted
 
---12 TASK (MEDIUM)
-/* NO SUCH TABLES NAME */
+--8.12 Using Products and Products_Discounted table, Combine all product names from Products and Products_Discounted without duplicates.
+SELECT ProductName FROM Products
+UNION
+SELECT ProductName FROM Products_Discounted
 
---13 TASK (MEDIUM)
+--8.13 Using Orders table, find the average order amount by year.
 SELECT 
-	e.Name,
-	e.Salary,
-	d.DepartmentName
-FROM Employees e
-CROSS JOIN Departments d
-WHERE e.Salary > 50000
+	YEAR(OrderDate) AS OrderYear,
+	AVG(TotalAmount) AS AvgOrderAmount
+FROM Orders
+GROUP BY YEAR(OrderDate)
 
---14 TASK (MEDIUM)
+--8.14 Using Products table, use CASE to group products based on price: 'Low' (<100), 'Mid' (100-500), 'High' (>500). Return productname and pricegroup.
 SELECT 
-	e.Name,
-	ed.DepartmentName,
-	e.Salary,
-	e.HireDate
-FROM Employees e
-JOIN EmployeeDepartments ed ON e.EmployeeID = ed.EmployeeID
+	ProductName,
+	CASE WHEN Price < 100 THEN 'Low'
+		 WHEN Price BETWEEN 100 AND 500 THEN 'Mid'
+		 ELSE 'High'
+	END AS price_group
+FROM Products
 
---15 TASK (MEDIUM)
-/* NO SUPPLIER TABLE */
+--8.15 Using Customers table, list all unique cities where customers live, sorted alphabetically.
+SELECT
+	DISTINCT City
+FROM Customers
 
---16 TASK (MEDIUM)
+--8.16 Using Sales table, find total sales per product Id.
+SELECT 
+	ProductID,
+	SUM(SaleAmount) AS total_sales
+FROM Sales
+GROUP BY ProductID
+
+--8.17 Using Products table, use wildcard to find products that contain 'oo' in the name. Return productname.
+SELECT
+	ProductName
+FROM Products
+WHERE ProductName LIKE '%oo%'
+
+--8.18 Using Products and Products_Discounted tables, compare product IDs using INTERSECT.
+SELECT ProductID FROM Products
+INTERSECT
+SELECT ProductID FROM Products_Discounted
+
+--8.19 Using Invoices table, show top 3 customers with the highest total invoice amount. Return CustomerID and Totalspent.
+SELECT TOP 3
+	CustomerID,
+	TotalAmount AS Totalspent
+FROM Invoices
+ORDER BY Totalspent DESC
+
+--8.20 Find product ID and productname that are present in Products but not in Products_Discounted.
+SELECT
+	ProductID,
+	ProductName
+FROM Products
+EXCEPT
+SELECT
+	ProductID,
+	ProductName
+FROM Products_Discounted
+
+--8.21 Using Products and Sales tables, list product names and the number of times each has been sold. (Research for Joins)
 SELECT 
 	p.ProductName,
-	SUM(s.SaleAmount) AS TotalSalesQuantity
+	COUNT(s.SaleID) AS TimesSold
 FROM Products p
-LEFT JOIN Sales s ON p.ProductID = s.ProductID
+JOIN Sales s 
+ON p.ProductID = s.ProductID
 GROUP BY p.ProductName
 
---17 TASK (MEDIUM)
-SELECT 
-	e.Name,
-	e.Salary,
-	d.DepartmentName
-FROM Employees e
-JOIN Departments d ON e.DepartmentID = d.DepartmentID
-WHERE e.Salary > 40000 AND d.DepartmentName = 'Human Resources'
-
---18 TASK (MEDIUM)
-/* QUESTION IS NOT CLEAR, IT DIDN`T MENTION TABLES NAME */
-SELECT t1*, t2*
-FROM Table1 t1
-JOIN Tabel2 t2 ON t1.column_name >= t2.column_name
-
---19 TASK (MEDIUM)
-/* NO SUPPLIER TABLE */
-
---20 TASK (MEDIUM)
-/* NO REGION TABLE */
-
---21 TASK (HARD)
-SELECT  
-	a.AuthorID,
-	a.Name,
-	b.Title
-FROM Authors a
-JOIN Books_Authors ba ON a.AuthorID = ba.AuthorID
-JOIN Books b ON b.BookID = ba.BookID
-
---22 TASK (HARD)
-SELECT 
-	DISTINCT p.ProductName,
-	pc.CategoryName
-FROM Products p
-JOIN ProductCategories pc ON p.ProductID = pc.ProductID
-WHERE pc.CategoryName <> 'Electronics'
-
---23 TASK (HARD)
-SELECT 
-	p.ProductName,
-	od.TotalAmount
-FROM OrderDetails od
-CROSS JOIN Products p
-WHERE od.TotalAmount > 100
-
---24 TASK (HARD)
-SELECT 
-	e.Name,
-	d.DepartmentName,
-	e.HireDate
-FROM Employees e
-JOIN Departments d ON e.DepartmentID = d.DepartmentID
-AND	HireDate <= DATEADD(YEAR, -5, GETDATE())
-
---25 TASK (HARD)
-SELECT 
-	e.EmployeeID,
-	e.Name,
-	d.DepartmentName,
-	e.HireDate
-FROM Employees e
-JOIN Departments d 
-ON e.DepartmentID = d.DepartmentID
-
-SELECT 
-	e.EmployeeID,
-	e.Name,
-	d.DepartmentName,
-	e.HireDate
-FROM Employees e
-LEFT JOIN Departments d 
-ON e.DepartmentID = d.DepartmentID
-
---26 TASK (HARD)
-/* NO SUPPLIER TABLE */
-
---27 TASK (HARD)
-SELECT
-	c.CustomerID,
-	c.CustomerName,
-	COUNT(od.OrderID) AS OrderCount
-FROM Customers c
-JOIN OrderDetails od
-ON c.CustomerID = od.CustomerID
-GROUP BY c.CustomerID, c.CustomerName
-HAVING COUNT(od.OrderID) > 10
-
---28 TASK (HARD)
-/* NO COURCES AND STUDENTS TABLE */
-
---29 TASK (HARD)
-SELECT 
-	e.EmployeeID,
-	e.Name,
-	d.DepartmentName
-FROM Employees e
-JOIN Departments d
-ON e.DepartmentID = d.DepartmentID
-WHERE d.DepartmentName = 'Marketing'
-
---30 TASK (HARD)
-/* QUESTION IS NOT CLEAR, IT DIDN`T MENTION TABLES NAME */
+--8.22 Using Orders table, find top 5 products (by ProductID) with the highest order quantities.
+SELECT TOP 5
+	ProductID,
+	SUM(Quantity) AS total_orders
+FROM Orders
+GROUP BY ProductID
+ORDER BY total_orders DESC

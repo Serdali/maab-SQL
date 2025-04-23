@@ -1,102 +1,118 @@
---CREATE DATABASE hwlesson_2
+--2.1 Create a table Employees with columns: EmpID INT, Name (VARCHAR(50)), and Salary (DECIMAL(10,2)).
+CREATE TABLE Employees (EmpID INT, Name VARCHAR(50), Salary DECIMAL(10,2))
 
----1 task
+--2.2 Insert three records into the Employees table using different INSERT INTO approaches (single-row insert and multiple-row insert).
+INSERT INTO Employees (EmpID, Name, Salary)
+VALUES 
+	(1, 'John Wick', 20000),
+	(2, 'Alex Cross', 25000),
+	(3, 'Lucy Lee', 16000)
 
-CREATE TABLE Salesman (salesman_id INT, name varchar(50), city varchar(50), commission float)
-INSERT INTO Salesman VALUES
-(5001, 'James Hoog', 'New York', 0.15),
-(5002, 'Nail Knite', 'Paris', 0.13),
-(5005, 'Pit Alex', 'London', 0.11),
-(5006, 'Mc Lyon', 'Paris', 0.14),
-(5007, 'Paul Adam', 'Rome', 0.13),
-(5003, 'Lauson Hen', 'San Jose', 0.12)
+--2.3 Update the Salary of an employee where EmpID = 1.
+UPDATE Employees
+SET Salary = 22500
+WHERE EmpID = 1
 
----2 task
-CREATE TABLE Orders (ord_no INT, purch_amt FLOAT, ord_date DATE, customer_id INT, salesman_id INT)
-INSERT INTO Orders VALUES
-(70001, 150.5, '2012-10-05', 3005, 5002),
-(70009, 270.65, '2012-09-10', 3001, 5005),
-(70002, 65.26, '2012-10-05', 3002, 5001),
-(70004, 110.5, '2012-08-17', 3009, 5003),
-(70007, 948.5, '2012-09-10', 3005, 5002),
-(70005, 2400.6, '2012-07-27', 3007, 5001),
-(70008, 5760, '2012-09-10', 3002, 5001),
-(70010, 1983.43, '2012-10-10', 3004, 5006),
-(70003, 2480.4, '2012-10-10', 3009, 5003),
-(70012, 250.45, '2012-06-27', 3008, 5002),
-(70011, 75.29, '2012-08-17', 3003, 5007),
-(70013, 3045.6, '2012-04-25', 3002, 5001)
+--2.4 Delete a record from the Employees table where EmpID = 2.
+DELETE FROM Employees
+WHERE EmpID = 2
 
-SELECT ord_date, salesman_id, ord_no, purch_amt 
-FROM Orders
+--2.5 Demonstrate the difference between DELETE, TRUNCATE, and DROP commands on a test table.
+DELETE FROM TestTable
+WHERE ID = 1
 
----3 task
-CREATE TABLE Customer (customer_id INT, cust_name VARCHAR(50), city VARCHAR(50), grade INT, salesman_id INT)
-INSERT INTO Customer VALUES
-(3002, 'Nick Rimando', 'New York', 100, 5001),
-(3007, 'Brad Davis', 'New York', 200, 5001),
-(3005, 'Graham Zusi', 'California', 200, 5002),
-(3008, 'Julian Green', 'London', 300, 5002),
-(3004, 'Fabian Johnson', 'Paris', 300, 5006),
-(3009, 'Geoff Cameron', 'Berlin', 100, 5003),
-(3003, 'Jozy Altidor', 'Moscow', 200, 5007),
-(3001, 'Brad Guzan', 'London', NULL, 5005)
+TRUNCATE TABLE TestTable
 
----4 task
-CREATE TABLE nobel_win (YEAR INT, SUBJECT VARCHAR(50), WINNER VARCHAR(75), COUNTRY VARCHAR(50), CATEGORY VARCHAR(50))
-INSERT INTO nobel_win VALUES
-(1970, 'Physics', 'Hannes Alfven', 'Sweden', 'Scientist'),
-(1970, 'Physics', 'Louis Neel', 'France', 'Scientist'),
-(1970, 'Chemistry', 'Luis Federico Leloir', 'France', 'Scientist'),
-(1970, 'Physiology', 'Ulf von Euler', 'Sweden', 'Scientist'),
-(1970, 'Physiology', 'Bernard Katz', 'Germany', 'Scientist'),
-(1970, 'Literature', 'Aleksandr Solzhenitsyn', 'Russia', 'Linguist'),
-(1970, 'Economics', 'Paul Samuelson', 'USA', 'Economist'),
-(1970, 'Physiology', 'Julius Axelrod', 'USA', 'Scientist'),
-(1971, 'Physics', 'Dennis Gabor', 'Hungary', 'Scientist'),
-(1971, 'Chemistry', 'Gerhard Herzberg', 'Germany', 'Scientist'),
-(1971, 'Peace', 'Willy Brandt', 'Germany', 'Chancellor'),
-(1971, 'Literature', 'Pablo Neruda', 'Chile', 'Linguist'),
-(1971, 'Economics', 'Simon Kuznets', 'Russia', 'Economist'),
-(1978, 'Peace', 'Anwar al-Sadat', 'Egypt', 'President'),
-(1978, 'Peace', 'Menachem Begin', 'Israel', 'Prime Minister'),
-(1987, 'Chemistry', 'Donald J. Cram', 'USA', 'Scientist'),
-(1987, 'Chemistry', 'Jean-Marie Lehn', 'France', 'Scientist'),
-(1987, 'Physiology', 'Susumu Tonegawa', 'Japan', 'Scientist'),
-(1994, 'Economics', 'Reinhard Selten', 'Germany', 'Economist'),
-(1994, 'Peace', 'Yitzhak Rabin', 'Israel', 'Prime Minister'),
-(1987, 'Physics', 'Johannes Georg Bednorz', 'Germany', 'Scientist'),
-(1987, 'Literature', 'Joseph Brodsky', 'Russia', 'Linguist'),
-(1987, 'Economics', 'Robert Solow', 'USA', 'Economist'),
-(1994, 'Literature', 'Kenzaburo Oe', 'Japan', 'Linguist')
+DROP TABLE TestTable
 
----5 task
-CREATE TABLE item_mast (pro_id INT, pro_name VARCHAR(50), pro_price DECIMAL (10,2), PRO_COM INT)
-INSERT INTO item_mast VALUES
-(101, 'Mother Board', 3200.00, 15),
-(102, 'Key Board', 450.00, 16),
-(103, 'ZIP drive', 250.00, 14),
-(104, 'Speaker', 550.00, 16),
-(105, 'Monitor', 5000.00, 11),
-(106, 'DVD drive', 900.00, 12),
-(107, 'CD drive', 800.00, 12),
-(108, 'Printer', 2600.00, 13),
-(109, 'Refill cartridge', 350.00, 13),
-(110, 'Mouse', 250.00, 12)
+--2.6 Modify the Name column in the Employees table to VARCHAR(100).
+ALTER TABLE Employees
+ALTER COLUMN Name VARCHAR(100)
 
----6 task
-CREATE TABLE emp_details (EMP_IDNO INT, EMP_FNAME VARCHAR(50), EMP_LNAME VARCHAR(50), EMP_DEPT INT)
-INSERT INTO emp_details VALUES
-(127323,'Michale','Robbin',57),
-(526689,'Carlos','Snares',63),
-(843795,'Enric','Dosio',57),
-(328717,'John','Snares',63),
-(444527,'Joseph','Dosni',47),
-(659831,'Zanifer','Emily',47),
-(847674,'Kuleswar','Sitaraman',57),
-(748681,'Henrey','Gabriel',47),
-(555935,'Alex','Manuel',57),
-(539569,'George','Mardy',27),
-(733843,'Mario','Saule',63),
-(631548,'Alan','Snappy',27),
-(839139,'Maria','Foster',57)
+--2.7 Add a new column Department (VARCHAR(50)) to the Employees table
+ALTER TABLE Employees
+ADD Department VARCHAR(50)
+
+--2.8 Change the data type of the Salary column to FLOAT.
+ALTER TABLE Employees
+ALTER COLUMN Salary FLOAT
+
+--2.9 Create another table Departments with columns DepartmentID (INT, PRIMARY KEY) and DepartmentName (VARCHAR(50)).
+CREATE TABLE Departments (DepartmentID INT PRIMARY KEY, DepartmentName VARCHAR(50))
+
+--2.10 Remove all records from the Employees table without deleting its structure.
+DELETE FROM Employees
+
+--2.11 Insert five records into the Departments table using INSERT INTO SELECT from an existing table.
+INSERT INTO Departments (DepartmentID, DepartmentName)
+VALUES 
+	(1, 'IT'),
+	(2, 'Sales'),
+	(3, 'Marketing'),
+	(4, 'Finance'),
+	(5, 'HR')
+
+--2.12 Update the Department of all employees where Salary > 5000 to 'Management'.
+UPDATE Employees
+SET DepartmentName = 'Management'
+WHERE Salary > 50000
+
+--2.13 Write a query that removes all employees but keeps the table structure intact.
+DELETE FROM Employees
+
+--2.14 Drop the Department column from the Employees table.
+ALTER TABLE Employees
+DROP COLUMN DepartmentID
+
+--2.15 Rename the Employees table to StaffMembers using SQL commands.
+EXEC sp_rename 'Employees', 'StaffMembers'
+
+--2.16 Write a query to completely remove the Departments table from the database.
+DROP TABLE Departments
+
+--2.17	Create a table named Products with at least 5 columns, including: ProductID (Primary Key), ProductName (VARCHAR), Category (VARCHAR), Price (DECIMAL)
+CREATE TABLE Products (ProductID INT Primary Key, ProductName VARCHAR(50), Category VARCHAR(50), Price DECIMAL(10,2))
+
+--2.18 Add a CHECK constraint to ensure Price is always greater than 0.
+ALTER TABLE Products
+ADD CONSTRAINT chk_prod_price CHECK (Price > 0)
+
+--2.19 Modify the table to add a StockQuantity column with a DEFAULT value of 50.
+ALTER TABLE Products
+ADD StockQuantity INT DEFAULT 50
+
+--2.20 Rename Category to ProductCategory
+sp_rename 'dbo.Products.Category', 'ProductCategory', 'COLUMN'
+
+--2.21 Insert 5 records into the Products table using standard INSERT INTO queries.
+INSERT INTO Products (ProductID, ProductName, ProductCategory, Price, StockQuantity)
+VALUES 
+	(1, 'Laptop', 'Electronics', 53.5, 100),
+	(2, 'Keyboard', 'Electronics', 66.52, 120),
+	(3, 'Kettle', 'Kitchen', 23.35, 150),
+	(4, 'Kitchen Table', 'Kitchen', 57.42, 110),
+	(5, 'Notebook', 'Stationery', 5.25, 130)
+
+--2.22 Use SELECT INTO to create a backup table called Products_Backup containing all Products data.
+SELECT *
+INTO Products_Backup
+FROM Products
+
+--2.23 Rename the Products table to Inventory.
+sp_rename 'Products', 'Inventory'
+
+--2.24 Alter the Inventory table to change the data type of Price from DECIMAL(10,2) to FLOAT.
+ALTER TABLE Inventory
+DROP CONSTRAINT IF EXISTS chk_prod_price
+
+-- Alter the column
+ALTER TABLE Inventory
+ALTER COLUMN Price FLOAT NOT NULL
+
+-- Re-add the CHECK constraint
+ALTER TABLE Inventory
+ADD CONSTRAINT chk_prod_price CHECK (Price > 0)
+
+--2.25 Add an IDENTITY column named ProductCode that starts from 1000 and increments by 5.
+ALTER TABLE Inventory
+ADD ProductCode INT IDENTITY(1000, 5)
